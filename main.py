@@ -84,6 +84,125 @@ def init_default_data():
 async def startup_event():
     init_default_data()
 
+
+# ==================== AUTHENTICATION ENDPOINTS ====================
+
+@app.post("/api/auth/register", status_code=status.HTTP_201_CREATED)
+async def register(
+    data: RegisterRequest,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """Register a new user"""
+    try:
+        # Only allow admin to create admin/developer accounts
+        current_user_obj = None
+        try:
+            # Try to get current user (optional) for role-based registration
+            auth_header = request.headers.get('authorization', '')
+            if auth_header.startswith('Bearer '):
+                token = auth_header.split(' ')[1]
+                payload = verify_token(token)
+                if payload:
+                    current_user_obj = db.query(User).filter(User.id == payload['user_id']).first()
+        except:
+            pass
+       
+        if data.role in ['admin', 'developer']:
+            if not current_user_obj or current_user_obj.role != 'admin':
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Only admins can create admin/developer accounts"
+                )
+       
+        # Check if user already exists
+        if db.query(User).filter(User.username == data.username).first():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Username already exists"
+            )
+        if db.query(User).filter(User.email == data.email).first():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already exists"
+            )
+       
+        # Create user
+        user = User(username=data.username, email=data.email, role=data.role)
+        user.set_password(data.password)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+       
+        ActivityLogger.log(db, user.id, 'user_registered', 201, {'username': data.username, 'role': data.role}, request)
+       
+        return {
+            'message': 'User registered successfully',
+            'user': user.to_dict()
+        }
+   
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Registration error: {e}")
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Registration failed"
+        )
+
+@app.post("/api/auth/login", response_model=LoginResponse)
+async def login(
+    data: LoginRequest,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """Login user and return JWT token"""
+    try:
+        user = db.query(User).filter(User.username == data.username).first()
+       
+        if not user or not user.check_password(data.password):
+            ActivityLogger.log(db, None, 'login_failed', 401, {'username': data.username}, request)
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid credentials"
+            )
+       
+        if not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Account is inactive"
+            )
+       
+        token = generate_token(user.id, user.role)
+        ActivityLogger.log(db, user.id, 'login', 200, {'username': data.username}, request)
+       
+        return LoginResponse(token=token, user=user.to_dict())
+   
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Login error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Login failed"
+        )
+
+@app.post("/api/auth/logout")
+async def logout(
+    request: Request,
+    current_user: User = Depends(require_auth),
+    db: Session = Depends(get_db)
+):
+    """Logout user"""
+    ActivityLogger.log(db, current_user.id, 'logout', 200, None, request)
+    return {'message': 'Logged out successfully'}
+
+@app.get("/api/auth/me")
+async def get_current_user_info(current_user: User = Depends(require_auth)):
+    """Get current user information"""
+    return current_user.to_dict()
+
 # ==================== CHAT ENDPOINTS ====================
 
 @app.post("/api/chat", response_model=ChatResponse)
