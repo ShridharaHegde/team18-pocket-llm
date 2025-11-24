@@ -24,8 +24,8 @@ A comprehensive AI chat application with role-based access control, user managem
 - **Database Access**: Direct database queries
 
 ### Developer Features
-- **API Keys**: Generate and manage API keys for enabled models
-- **REST API**: Access to API endpoints for integration
+- **API Keys**: Generate and manage API keys for enabled models. 
+- **REST API**: Access to API endpoints for integration.
 
 ## Setup
 
