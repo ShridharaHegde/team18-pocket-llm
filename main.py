@@ -392,6 +392,96 @@ async def get_models(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve models"
         )
+    
+# ==================== DEVELOPER ENDPOINTS ====================
+
+@app.get("/api/developer/api-keys")
+async def get_api_keys(
+    current_user: User = Depends(require_developer),
+    db: Session = Depends(get_db)
+):
+    """Get API keys for enabled models"""
+    try:
+        api_keys = db.query(APIKey).filter(APIKey.user_id == current_user.id, APIKey.is_active == True).all()
+        return [key.to_dict(include_key=True) for key in api_keys]
+    except Exception as e:
+        logging.error(f"Error getting API keys: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve API keys"
+        )
+
+@app.post("/api/developer/api-keys", status_code=status.HTTP_201_CREATED)
+async def create_api_key(
+    data: CreateAPIKeyRequest,
+    current_user: User = Depends(require_developer),
+    request: Request = None,
+    db: Session = Depends(get_db)
+):
+    """Create API key for a model"""
+    try:
+        model = db.query(Model).filter(Model.id == data.model_id).first()
+        if not model or not model.is_enabled:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Model not found or disabled"
+            )
+        
+        # Generate API key (in production, use secure random generation)
+        api_key_value = f"{current_user.id}_{data.model_id}_{uuid.uuid4().hex}"
+        
+        api_key = APIKey(
+            user_id=current_user.id,
+            model_id=data.model_id,
+            key_value=api_key_value
+        )
+        db.add(api_key)
+        db.commit()
+        db.refresh(api_key)
+        
+        ActivityLogger.log(db, current_user.id, 'api_key_created', 201, {'model_id': data.model_id}, request)
+        return api_key.to_dict(include_key=True)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error creating API key: {e}")
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to create API key"
+        )
+
+@app.delete("/api/developer/api-keys/{key_id}")
+async def delete_api_key(
+    key_id: str,
+    current_user: User = Depends(require_developer),
+    request: Request = None,
+    db: Session = Depends(get_db)
+):
+    """Delete an API key"""
+    try:
+        api_key = db.query(APIKey).filter(APIKey.id == key_id).first()
+        
+        if not api_key or api_key.user_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="API key not found"
+            )
+        
+        api_key.is_active = False
+        db.commit()
+        
+        ActivityLogger.log(db, current_user.id, 'api_key_deleted', 200, {'key_id': key_id}, request)
+        return {"message": "API key deleted"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error deleting API key: {e}")
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to delete API key"
+        )
 
 # ==================== ADMIN ENDPOINTS ====================
 
