@@ -1,0 +1,53 @@
+services:
+  # Ollama service for LLM models
+  ollama:
+    image: ollama/ollama:latest
+    container_name: pocket-llm-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+    networks:
+      - pocket-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # FastAPI application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pocket-llm-app
+    ports:
+      - "5000:5000"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - DATABASE_URL=sqlite:///./chat_app.db
+    volumes:
+      - ./chat_app.db:/app/chat_app.db
+      - ./static:/app/static
+    depends_on:
+      ollama:
+        condition: service_healthy
+    networks:
+      - pocket-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  pocket-network:
+    driver: bridge
+
+volumes:
+  ollama_data:
+    driver: local

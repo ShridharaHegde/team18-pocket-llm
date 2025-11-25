@@ -34,7 +34,7 @@ A comprehensive AI chat application with role-based access control, user managem
 - pip
 - Ollama installed and running
 
-### Installation
+### Option 1: Local Setup
 
 First create a venv
 
@@ -43,12 +43,72 @@ First create a venv
 pip install -r requirements.txt
 ```
 
-3. Start the application:
+2. Start the application:
 ```bash
 uvicorn main:app --host 0.0.0.0 --port 5000
 ```
 
 The application will be available at `http://localhost:5000`
+
+### Option 2: Docker Setup
+
+#### Prerequisites
+- Docker
+- Docker Compose
+
+#### Running with Docker Compose
+
+1. Build and start the services:
+```bash
+docker-compose up --build
+```
+
+This command will:
+- Build the FastAPI application image
+- Start the Ollama service
+- Start the FastAPI application
+- Create a Docker network for inter-service communication
+- Set up persistent volumes for the database and Ollama models
+
+2. Pull and load default models (run in a new terminal):
+```bash
+docker exec pocket-llm-ollama ollama pull gemma2:2b
+docker exec pocket-llm-ollama ollama pull llama2
+docker exec pocket-llm-ollama ollama pull mistral
+```
+
+3. Access the application:
+- Web UI: `http://localhost:5000`
+- Swagger API docs: `http://localhost:5000/docs`
+- Ollama: `http://localhost:11434`
+
+#### Stopping Docker Services
+
+```bash
+docker-compose down
+```
+
+To also remove volumes and data:
+```bash
+docker-compose down -v
+```
+
+#### Building the Image Separately
+
+```bash
+docker build -t pocket-llm-app .
+```
+
+#### Running the Container Manually
+
+```bash
+docker run -p 5000:5000 \
+  -e OLLAMA_BASE_URL=http://host.docker.internal:11434 \
+  --name pocket-llm-app \
+  pocket-llm-app
+```
+
+**Note:** Ensure Ollama is running on your host machine or accessible at the specified URL.
 
 ### Default Admin Account
 - Username: `admin`

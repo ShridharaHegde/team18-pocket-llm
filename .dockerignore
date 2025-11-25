@@ -1,0 +1,34 @@
+# Python and package files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+dist/
+build/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Database
+chat_app.db
+
+# Git
+.git
+.gitignore
+
+# Docker
+docker-compose.override.yml
+Dockerfile.dev
+
+# OS
+.env.local
+.env.*.local
