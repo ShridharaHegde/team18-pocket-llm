@@ -7,11 +7,11 @@ import Layout from './components/Layout';
 import ChatPage from './pages/ChatPage';
 import DocumentsPage from './pages/DocumentsPage';
 import HistoryPage from './pages/HistoryPage';
-import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/LoginPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import './App.css';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
@@ -21,9 +21,15 @@ function App() {
           <ThemeProvider>
             <Router>
               <Routes>
+                {/* Login Page */}
                 <Route path="/login" element={<LoginPage />} />
+                
+                <Route path="/admin" element={<AdminDashboard />} />
+
+                {/* Main Layout and Protected Pages (Everything else) */}
                 <Route path="/" element={<Layout />}>
                   <Route index element={<Navigate to="/chat" replace />} />
+                  
                   <Route 
                     path="chat" 
                     element={
@@ -48,14 +54,6 @@ function App() {
                       </ProtectedRoute>
                     } 
                   />
-                  <Route 
-                    path="admin" 
-                    element={
-                      <ProtectedRoute requiredRole="ADMIN">
-                        <AdminPage />
-                      </ProtectedRoute>
-                    } 
-                  />
                 </Route>
               </Routes>
             </Router>
@@ -67,3 +65,6 @@ function App() {
 }
 
 export default App;
+
+
+
