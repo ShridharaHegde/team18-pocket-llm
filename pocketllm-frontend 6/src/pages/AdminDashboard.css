@@ -1,0 +1,384 @@
+/* AdminDashboard - Theme Compatible (Dark & Light Mode) */
+
+/* Dashboard Layout */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: var(--accent-primary);
+  color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dashboard-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.dashboard-container .logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--bg-primary);
+}
+
+.logout-btn {
+  background: var(--accent-danger);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: white;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  opacity: 0.9;
+}
+
+/* Sidebar - Uses theme variables */
+.dashboard-container .sidebar {
+  width: 240px;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-container .tab-btn {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+
+.dashboard-container .tab-btn:hover {
+  background: var(--bg-tertiary);
+}
+
+.dashboard-container .tab-btn.active {
+  background: var(--accent-primary);
+  color: var(--bg-primary);
+}
+
+/* Main Content */
+.dashboard-container .main-content {
+  flex: 1;
+  padding: 20px;
+  overflow: auto;
+  background: var(--bg-primary);
+}
+
+.dashboard-container .main-content h2 {
+  color: var(--text-primary);
+  margin-bottom: 15px;
+}
+
+.dashboard-container .table-container {
+  background: var(--bg-secondary);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+  overflow-x: auto; /* Allow horizontal scroll if needed */
+}
+
+.dashboard-container .table-container h2 {
+  color: var(--text-primary);
+  margin-bottom: 15px;
+}
+
+.dashboard-container .scrollable-table {
+  max-height: 400px;
+  overflow: auto;
+  margin-top: 10px;
+}
+
+.dashboard-container .scrollable-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-container .scrollable-table th,
+.dashboard-container .scrollable-table td {
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  text-align: left;
+}
+
+.dashboard-container .scrollable-table th {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.dashboard-container .scrollable-table td {
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+}
+
+.dashboard-container .scrollable-table tr:hover td {
+  background: var(--bg-tertiary);
+}
+
+.dashboard-container .scrollable-table select {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Buttons */
+.dashboard-container .refresh-btn,
+.dashboard-container .add-btn,
+.dashboard-container .button-success,
+.dashboard-container .button-danger,
+.dashboard-container .button-secondary {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.dashboard-container .refresh-btn {
+  background: var(--accent-primary);
+  color: var(--bg-primary);
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dashboard-container .refresh-btn:hover {
+  opacity: 0.9;
+}
+
+.dashboard-container .add-btn {
+  background: #10b981;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.dashboard-container .add-btn:hover {
+  background: #059669;
+}
+
+.dashboard-container .button-success {
+  background: #10b981;
+  color: white;
+}
+
+.dashboard-container .button-success:hover {
+  background: #059669;
+}
+
+.dashboard-container .button-danger {
+  background: var(--accent-danger);
+  color: white;
+}
+
+.dashboard-container .button-danger:hover {
+  opacity: 0.9;
+}
+
+.dashboard-container .button-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.dashboard-container .button-secondary:hover {
+  background: var(--bg-secondary);
+}
+
+.dashboard-container .models-header {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.dashboard-container .logs-filter {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.dashboard-container .logs-filter select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Search Input */
+.dashboard-container .search-input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  width: 300px;
+  margin-bottom: 10px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.dashboard-container .search-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Modal */
+.dashboard-container .modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dashboard-container .modal {
+  background: var(--bg-secondary);
+  padding: 20px;
+  border-radius: 12px;
+  width: 350px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+}
+
+.dashboard-container .modal h3 {
+  color: var(--text-primary);
+  margin-bottom: 15px;
+}
+
+.dashboard-container .modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  justify-content: flex-end;
+}
+
+.dashboard-container .modal input,
+.dashboard-container .modal select {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.dashboard-container .modal input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Telemetry Table */
+.dashboard-container .telemetry-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  table-layout: fixed; /* Force fixed layout for better control */
+}
+
+.dashboard-container .telemetry-table th,
+.dashboard-container .telemetry-table td {
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  word-wrap: break-word; /* Allow long text to wrap */
+  overflow-wrap: break-word; /* Modern alternative to word-wrap */
+}
+
+.dashboard-container .telemetry-table th {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-weight: 600;
+  width: 30%; /* Metric column takes 30% */
+}
+
+.dashboard-container .telemetry-table td {
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  width: 70%; /* Value column takes 70% */
+}
+
+.dashboard-container .value-cell {
+  text-align: left; /* Changed from center to left for better readability */
+  font-family: var(--font-mono);
+  max-width: 0; /* Force wrapping with table-layout: fixed */
+  white-space: pre-wrap; /* Preserve formatting for JSON */
+}
+
+/* Access Denied */
+.admin-access-denied {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  text-align: center;
+  padding: 2rem;
+}
+
+.admin-access-denied svg {
+  color: var(--accent-danger);
+  margin-bottom: 1.5rem;
+}
+
+.admin-access-denied h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.admin-access-denied p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+/* User Badge in Header */
+.admin-user-badge {
+  font-size: 0.9rem;
+  color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-user-badge strong {
+  color: var(--bg-primary);
+  font-weight: 600;
+}
