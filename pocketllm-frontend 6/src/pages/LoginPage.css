@@ -122,6 +122,11 @@
   transition: all var(--transition-fast);
 }
 
+/* Ensure text is visible in light mode */
+[data-theme="light"] .form-group input {
+  color: #1a1a1a;
+}
+
 .form-group input:focus {
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 1px var(--accent-primary);

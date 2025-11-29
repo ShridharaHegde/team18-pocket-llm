@@ -45,10 +45,10 @@ pip install -r requirements.txt
 
 3. Start the application:
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 5000
+uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-The application will be available at `http://localhost:5000`
+The application will be available at `http://localhost:8000`
 
 ### Default Admin Account
 - Username: `admin`
@@ -56,7 +56,7 @@ The application will be available at `http://localhost:5000`
 
 **⚠️ IMPORTANT: Change the default admin password in production!**
 
-## API Endpoints (YOU CAN REFER localhost:5000/docs for a GUI Swagger version)
+## API Endpoints (YOU CAN REFER localhost:8000/docs for a GUI Swagger version)
 
 ### Authentication
 - `POST /api/auth/register` - Register a new user
@@ -88,7 +88,7 @@ The application will be available at `http://localhost:5000`
 
 ### Using the Web Interface
 
-1. Open `http://localhost:5000` in your browser
+1. Open `http://localhost:8000` in your browser
 2. Register a new account or login with the admin account
 3. Start chatting! Select a model from the dropdown
 4. Access chat history from the "Chat History" button
@@ -106,7 +106,7 @@ Authorization: Bearer <your_token>
 
 Example:
 ```bash
-curl -X POST http://localhost:5000/api/chat \
+curl -X POST http://localhost:8000/api/chat \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{"prompt": "Hello!", "model": "gemma2:2b"}'
@@ -150,7 +150,7 @@ Database schema includes:
 
 1. Install postman and create a free account (because its easy to import the project on postman and see all the apis)
 
-2. Go to localhost:5000/docs and copy the /openapi.json (small blue text beneath AI Chat Application)
+2. Go to localhost:8000/docs and copy the /openapi.json (small blue text beneath AI Chat Application)
 
 3. In postman, click on the import button and paste the copied json. Load it as a collection
 

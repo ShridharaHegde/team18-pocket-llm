@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # Optional: Uncomment to run Ollama in Docker
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   container_name: pocketllm-ollama
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama-data:/root/.ollama
+  #   networks:
+  #     - pocketllm-network
+  #   restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: pocketllm-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./chat_app.db:/app/chat_app.db
+      - ./__pycache__:/app/__pycache__
+    environment:
+      - DATABASE_URL=sqlite:///chat_app.db
+      # If Ollama is running on host, use host.docker.internal
+      # If Ollama is in Docker, use ollama:11434
+      - OLLAMA_HOST=${OLLAMA_HOST:-host.docker.internal:11434}
+    networks:
+      - pocketllm-network
+    # Allow connection to host Ollama service
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ./pocketllm-frontend 6
+      dockerfile: Dockerfile
+    container_name: pocketllm-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - pocketllm-network
+    restart: unless-stopped
+
+networks:
+  pocketllm-network:
+    driver: bridge
+
+volumes:
+  db-data:
+  # Uncomment if using Ollama in Docker
+  # ollama-data:
+

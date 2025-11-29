@@ -3,8 +3,6 @@ import uuid
 import os
 from datetime import datetime
 from fastapi import FastAPI, Depends, HTTPException, Request, status, Query
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
@@ -35,9 +33,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 cache_manager = CacheManager()
 logging.basicConfig(level=logging.INFO)

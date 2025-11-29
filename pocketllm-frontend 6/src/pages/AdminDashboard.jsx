@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
-import './admindashboard.css';
+import './AdminDashboard.css';
 import { Settings, Database, Users, Activity, BarChart3, Plus, Search, AlertCircle, CheckCircle, XCircle, RefreshCw, Shield, LogOut } from 'lucide-react';
-
-const API_BASE = 'http://localhost:8000';
 
 const AdminDashboard = () => {
   const { user } = useAuth(); // Use existing auth context
