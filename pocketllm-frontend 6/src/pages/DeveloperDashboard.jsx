@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
-import "./developerDashboard.css";
+import "./DeveloperDashboard.css";
 import { Key, Plus, Trash2, RefreshCcw, Shield } from "lucide-react";
 
 const DeveloperDashboard = () => {
     const { user } = useAuth();
 
     const [apiKeys, setApiKeys] = useState([]);
+    const [models, setModels] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [newKeyName, setNewKeyName] = useState("");
+    const [selectedModelId, setSelectedModelId] = useState("");
 
     // Require developer role
     if (!user || user.role !== "developer") {
@@ -22,39 +25,55 @@ const DeveloperDashboard = () => {
         );
     }
 
+    const fetchModels = async () => {
+        try {
+            const res = await axios.get("/api/models");
+            if (res.data && Array.isArray(res.data)) {
+                setModels(res.data);
+                // Auto-select first model if available
+                if (res.data.length > 0 && !selectedModelId) {
+                    setSelectedModelId(res.data[0].id);
+                }
+            }
+        } catch (err) {
+            console.error("Error fetching models:", err);
+        }
+    };
+
     const fetchKeys = async () => {
         setLoading(true);
         try {
             const res = await axios.get("/api/developer/api-keys");
 
-            // Ensure res.data.keys exists and is an array
-            if (res.data && Array.isArray(res.data.keys)) {
-                setApiKeys(res.data.keys);
+            // Backend returns array directly, not wrapped in { keys: [...] }
+            if (res.data && Array.isArray(res.data)) {
+                setApiKeys(res.data);
             } else {
-                setApiKeys([]);  // fallback to empty array
+                setApiKeys([]);
             }
 
             setError("");
         } catch (err) {
             setError(err.response?.data?.detail || err.message);
-            setApiKeys([]); // fallback to empty array on error
+            setApiKeys([]);
         } finally {
             setLoading(false);
         }
     };
 
-
-    const [newKeyName, setNewKeyName] = useState(""); // add state for key name
-
     const createKey = async () => {
-        if (!newKeyName) {
-            setError("API Key name is required");
+        // Clear any previous errors
+        setError("");
+
+        if (!selectedModelId) {
+            setError("Please select a model");
             return;
         }
 
         try {
-            await axios.post("/api/developer/api-keys", { name: newKeyName }); // send body
-            setNewKeyName(""); // clear input
+            await axios.post("/api/developer/api-keys", { model_id: selectedModelId });
+            setNewKeyName("");
+            setSelectedModelId(models.length > 0 ? models[0].id : "");
             fetchKeys();
             setError("");
         } catch (err) {
@@ -63,18 +82,22 @@ const DeveloperDashboard = () => {
         }
     };
 
-
-
     const deleteKey = async (keyId) => {
+        if (!window.confirm("Are you sure you want to delete this API key?")) {
+            return;
+        }
+
         try {
             await axios.delete(`/api/developer/api-keys/${keyId}`);
             fetchKeys();
+            setError("");
         } catch (err) {
             setError(err.response?.data?.detail || err.message);
         }
     };
 
     useEffect(() => {
+        fetchModels();
         fetchKeys();
     }, []);
 
@@ -97,49 +120,100 @@ const DeveloperDashboard = () => {
                     </div>
                 )}
 
-
                 <div className="dev-card">
-                    <h2>Your API Keys</h2>
-                    <div className="dev-buttons">
-                        <button className="dev-btn success" onClick={createKey}>
+                    <h2>Create New API Key</h2>
+                    <div className="dev-create-form">
+                        <div className="dev-form-group">
+                            <label htmlFor="key-name">API Key Name (Optional)</label>
+                            <input
+                                id="key-name"
+                                type="text"
+                                className="dev-input"
+                                placeholder="Enter a name for your API key (optional)"
+                                value={newKeyName}
+                                onChange={(e) => {
+                                    setNewKeyName(e.target.value);
+                                    // Clear error when user starts typing
+                                    if (error) setError("");
+                                }}
+                            />
+                        </div>
+                        <div className="dev-form-group">
+                            <label htmlFor="model-select">Model</label>
+                            <select
+                                id="model-select"
+                                className="dev-select"
+                                value={selectedModelId}
+                                onChange={(e) => {
+                                    setSelectedModelId(e.target.value);
+                                    // Clear error when user selects a model
+                                    if (error) setError("");
+                                }}
+                            >
+                                {models.length === 0 ? (
+                                    <option value="">Loading models...</option>
+                                ) : (
+                                    <>
+                                        <option value="">Select a model</option>
+                                        {models.map((model) => (
+                                            <option key={model.id} value={model.id}>
+                                                {model.display_name || model.name}
+                                            </option>
+                                        ))}
+                                    </>
+                                )}
+                            </select>
+                        </div>
+                        <button className="dev-btn success" onClick={createKey} disabled={loading}>
                             <Plus /> Create API Key
                         </button>
+                    </div>
+                </div>
 
-                        <button className="dev-btn refresh" onClick={fetchKeys}>
+                <div className="dev-card">
+                    <div className="dev-card-header">
+                        <h2>Your API Keys</h2>
+                        <button className="dev-btn refresh" onClick={fetchKeys} disabled={loading}>
                             <RefreshCcw /> Refresh
                         </button>
                     </div>
 
-                    <table className="dev-table">
-                        <thead>
-                            <tr>
-                                <th>Key ID</th>
-                                <th>API Key</th>
-                                <th>Created At</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {apiKeys.map((k) => (
-                                <tr key={k.id}>
-                                    <td>{k.id}</td>
-                                    <td>{k.key}</td>
-                                    <td>{new Date(k.created_at).toLocaleString()}</td>
-                                    <td>
-                                        <button
-                                            className="dev-btn danger"
-                                            onClick={() => deleteKey(k.id)}
-                                        >
-                                            <Trash2 /> Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-
-                    {apiKeys.length === 0 && (
+                    {loading && apiKeys.length === 0 ? (
+                        <p className="no-keys">Loading...</p>
+                    ) : apiKeys.length === 0 ? (
                         <p className="no-keys">No API Keys Found</p>
+                    ) : (
+                        <table className="dev-table">
+                            <thead>
+                                <tr>
+                                    <th>Key ID</th>
+                                    <th>API Key</th>
+                                    <th>Model</th>
+                                    <th>Created At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {apiKeys.map((k) => (
+                                    <tr key={k.id}>
+                                        <td>{k.id}</td>
+                                        <td className="dev-api-key-cell">
+                                            <code>{k.key_value || k.key}</code>
+                                        </td>
+                                        <td>{k.model_name || "N/A"}</td>
+                                        <td>{new Date(k.created_at).toLocaleString()}</td>
+                                        <td>
+                                            <button
+                                                className="dev-btn danger"
+                                                onClick={() => deleteKey(k.id)}
+                                            >
+                                                <Trash2 /> Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     )}
                 </div>
             </main>

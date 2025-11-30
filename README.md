@@ -2,6 +2,13 @@
 
 A comprehensive AI chat application with role-based access control, user management, and admin features.
 
+## Docker quickstart
+#### Build and start all services
+docker-compose up --build
+
+#### Or run in background
+docker-compose up -d --build
+
 ## Features
 
 ### User Features

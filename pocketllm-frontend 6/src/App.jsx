@@ -14,6 +14,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import './App.css';
 import AdminDashboard from './pages/AdminDashboard';
+import DeveloperDashboard from './pages/DeveloperDashboard';
 
 function App() {
   return (
@@ -52,7 +53,7 @@ function App() {
                 <Route
                   path="developer"
                   element={
-                    <ProtectedRoute roles={['developer']}>
+                    <ProtectedRoute requiredRole="developer">
                       <DeveloperDashboard />
                     </ProtectedRoute>
                   }

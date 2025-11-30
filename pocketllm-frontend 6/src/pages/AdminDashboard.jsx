@@ -255,6 +255,7 @@ const AdminDashboard = () => {
                         <td>
                           <select value={user.role} onChange={e=>updateUserRole(user.id,e.target.value)}>
                             <option value="admin">Admin</option>
+                            <option value="developer">Developer</option>
                             <option value="user">User</option>
                           </select>
                         </td>
