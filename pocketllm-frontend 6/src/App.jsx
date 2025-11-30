@@ -14,54 +14,63 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import './App.css';
 import AdminDashboard from './pages/AdminDashboard';
+import DeveloperDashboard from './pages/DeveloperDashboard';
 
 function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
-       
-          <ThemeProvider>
-            <Router>
-              <Routes>
-                {/* Public routes */}
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                
-                
-                {/* Protected routes */}
-                <Route path="/app" element={<Layout />}>
-                  <Route index element={<Navigate to="/app/chat" replace />} />
-                  <Route 
-                    path="chat" 
-                    element={
-                      <ProtectedRoute>
-                        <ChatPage />
-                      </ProtectedRoute>
-                    } 
-                  />
-                 
-                  <Route 
-                    path="history" 
-                    element={
-                      <ProtectedRoute>
-                        <HistoryPage />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="admin" 
-                    element={
-                      <ProtectedRoute requiredRole="admin">
-                        <AdminDashboard/>
-                      </ProtectedRoute>
-                    } 
-                  />
-                </Route>
-              </Routes>
-            </Router>
-          </ThemeProvider>
-       
+
+        <ThemeProvider>
+          <Router>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+
+
+              {/* Protected routes */}
+              <Route path="/app" element={<Layout />}>
+                <Route index element={<Navigate to="/app/chat" replace />} />
+                <Route
+                  path="chat"
+                  element={
+                    <ProtectedRoute>
+                      <ChatPage />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="history"
+                  element={
+                    <ProtectedRoute>
+                      <HistoryPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="developer"
+                  element={
+                    <ProtectedRoute requiredRole="developer">
+                      <DeveloperDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="admin"
+                  element={
+                    <ProtectedRoute requiredRole="admin">
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
+            </Routes>
+          </Router>
+        </ThemeProvider>
+
       </AuthProvider>
     </ErrorBoundary>
   );
