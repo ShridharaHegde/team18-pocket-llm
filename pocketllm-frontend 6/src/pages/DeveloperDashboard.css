@@ -1,0 +1,112 @@
+.dev-dashboard-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+/* Header */
+.dev-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 30px;
+    align-items: center;
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dev-user-badge {
+    color: var(--bg-primary);
+}
+
+/* Main Content */
+.dev-main-content {
+    padding: 20px;
+    overflow: auto;
+}
+
+/* Cards */
+.dev-card {
+    background: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.dev-card h2 {
+    margin-bottom: 15px;
+    color: var(--text-primary);
+}
+
+/* Table */
+.dev-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dev-table th,
+.dev-table td {
+    border: 1px solid var(--border-color);
+    padding: 8px;
+}
+
+.dev-table th {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* Buttons */
+.dev-btn {
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 8px;
+}
+
+.dev-btn.success {
+    background: #10b981;
+    color: white;
+}
+
+.dev-btn.danger {
+    background: var(--accent-danger);
+    color: white;
+}
+
+.dev-btn.refresh {
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+}
+
+.dev-btn:hover {
+    opacity: 0.9;
+}
+
+.no-keys {
+    margin-top: 10px;
+    color: var(--text-secondary);
+}
+
+/* Access Denied */
+.dev-access-denied {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    color: var(--text-primary);
+}
+
+.dev-error-box {
+    padding: 10px;
+    background: var(--accent-danger);
+    color: white;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
