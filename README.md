@@ -7,6 +7,8 @@ A comprehensive AI chat application with role-based access control, user managem
 
 1. Docker (with a running daemon)
 2. Ollama (installed and running)  (`ollama run gemma2:2b`)
+   (NOTE: `ollama run <your-model>` is needed to run any custom model, once the model is running in the background, the Admin would have to add the new model from the UI to enable it)
+   (NOTE: `gemma2:2b` is supported by the UI by default, so just running the model in ollama would suffice, no need to add it in the UI)
 
 ## Quickstart Guide (Docker)
 #### Build and start all services
@@ -14,6 +16,10 @@ A comprehensive AI chat application with role-based access control, user managem
 
 #### To access the portal
 In your browser, go to `localhost:3000`
+
+NOTE: We created an admin user by default (it happens automatically when the container spins up),
+- Username: `admin`
+- Password: `admin123`
 
 ## Features
 
@@ -62,10 +68,6 @@ uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 The application will be available at `http://localhost:8000`
-
-### Default Admin Account
-- Username: `admin`
-- Password: `admin123`
 
 ## API Endpoints (YOU CAN REFER localhost:8000/docs for a GUI Swagger version)
 
