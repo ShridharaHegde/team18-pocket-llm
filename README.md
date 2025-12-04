@@ -1,13 +1,19 @@
-# AI Chat Application
+# Pocket-LLM Application
 
 A comprehensive AI chat application with role-based access control, user management, and admin features.
 
-## Docker quickstart
-#### Build and start all services
-docker-compose up --build
 
-#### Or run in background
-docker-compose up -d --build
+## Requirements
+
+1. Docker (with a running daemon)
+2. Ollama (installed and running)  (`ollama run gemma2:2b`)
+
+## Quickstart Guide (Docker)
+#### Build and start all services
+`docker-compose up --build`
+
+#### To access the portal
+In your browser, go to `localhost:3000`
 
 ## Features
 
@@ -34,7 +40,7 @@ docker-compose up -d --build
 - **API Keys**: Generate and manage API keys for enabled models. 
 - **REST API**: Access to API endpoints for integration.
 
-## Setup
+## Dev Setup (For contributors)
 
 ### Prerequisites
 - Python 3.9 (preferrably cuz I developed in it)
@@ -60,8 +66,6 @@ The application will be available at `http://localhost:8000`
 ### Default Admin Account
 - Username: `admin`
 - Password: `admin123`
-
-**⚠️ IMPORTANT: Change the default admin password in production!**
 
 ## API Endpoints (YOU CAN REFER localhost:8000/docs for a GUI Swagger version)
 
